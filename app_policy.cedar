@@ -1,8 +1,8 @@
-// Define actions
-action create, read, update, delete;
+// Define actions as strings
+action "create", "read", "update", "delete";
 
-// Define roles
-principal Broker, Manager;
+// Define roles for principal
+principal Role = "Broker" or "Manager";
 
 // Define resources
 resource Feature {
@@ -13,8 +13,8 @@ resource Feature {
 
 // Policies for Brokers
 permit(
-    principal == Broker, 
-    action in [create, read, update], 
+    principal in Role::"Broker", 
+    action in ["create", "read", "update"], 
     resource.app_name in ["evo-api", "evo-frontend"]
 )
 when {
@@ -23,8 +23,8 @@ when {
 
 // Policies for Managers
 permit(
-    principal == Manager, 
-    action in [read, delete], 
+    principal in Role::"Manager", 
+    action in ["read", "delete"], 
     resource.app_name in ["evo-api", "evo-frontend"]
 )
 when {
