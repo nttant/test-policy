@@ -1,30 +1,35 @@
-// Policy 0: Any User can create a list and see what lists they own
 permit (
-    principal,
-    action in [Action::"CreateList", Action::"GetLists"],
-    resource == Application::"TinyTodo"
+    principal in Role::"Evo-Admin",
+    action in [Action::"create", Action::"read", Action::"update", Action::"delete"],
+    resource == Feature::"evo-quote"
 );
 
-// Policy 1: A User can perform any action on a List they own
-permit (principal, action, resource)
-when { resource has owner && resource.owner == principal };
-
-// Policy 2: A User can see a List if they are either a reader or editor
 permit (
-    principal,
-    action == Action::"GetList",
-    resource
-)
-when { principal in resource.readers || principal in resource.editors };
-
-// Policy 3: A User can update a List and its tasks if they are an editor
+    principal in Role::"Evo-Editor",
+    action in [Action::"read", Action::"update"],
+    resource == Feature::"evo-quote"
+);
+   
 permit (
-    principal,
-    action in
-        [Action::"UpdateList",
-         Action::"CreateTask",
-         Action::"UpdateTask",
-         Action::"DeleteTask"],
-    resource
-)
-when { principal in resource.editors };
+    principal in Role::"Evo-Viewer",
+    action in [Action::"read"],
+    resource == Feature::"evo-quote"
+);
+
+permit (
+    principal in Role::"Evo-Admin",
+    action in [Action::"create", Action::"read", Action::"update", Action::"delete"],
+    resource == Feature::"evo-settings"
+);
+
+permit (
+    principal in Role::"Evo-Editor",
+    action in [Action::"read"],
+    resource == Feature::"evo-settings"
+);
+   
+permit (
+    principal in Role::"Evo-Viewer",
+    action in [Action::"read"],
+    resource == Feature::"evo-settings"
+);
